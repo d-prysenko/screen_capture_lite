@@ -80,6 +80,10 @@ set(libsrc
 if(NOT ${BUILD_SHARED_LIBS})
     message("Building STATIC Library")
     add_library(${PROJECT_NAME}_static STATIC ${libsrc})
+    set_target_properties(${PROJECT_NAME}_static PROPERTIES
+        OUTPUT_NAME ${PROJECT_NAME}_static
+        VERSION ${PROJECT_VERSION}
+    )
 else()
   message("Building SHARED Library")
   
