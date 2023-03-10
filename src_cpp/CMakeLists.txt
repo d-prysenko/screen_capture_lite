@@ -1,7 +1,4 @@
-project(screen_capture_lite)
-
-set(SCREEN_CAPTURE_LITE_EXPORT_ALL_SYMBOLS ${CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS})
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+project(screen_capture_lite VERSION 17.1)
 
 if(WIN32)
     set(SCREEN_CAPTURE_PLATFORM_SRC     
@@ -63,26 +60,40 @@ else()
     )
 endif()
 
+set(SCREEN_CAPTURE_INCLUDE_DIR ../include)
+
+
 
 include_directories(
-	../include 
 	${SCREEN_CAPTURE_PLATFORM_INC}
 )
 
 set(libsrc 
-	../include/ScreenCapture.h 
-		../include/internal/SCCommon.h 
-		../include/internal/ThreadManager.h
-		ScreenCapture.c
-		ScreenCapture.cpp
-		SCCommon.cpp
-		ThreadManager.cpp
-		${SCREEN_CAPTURE_PLATFORM_SRC}
+    ../include/ScreenCapture.h 
+    ../include/internal/SCCommon.h 
+    ../include/internal/ThreadManager.h
+    ScreenCapture.c
+    ScreenCapture.cpp
+    SCCommon.cpp
+    ThreadManager.cpp
+    ${SCREEN_CAPTURE_PLATFORM_SRC}
 )
 
 if(NOT ${BUILD_SHARED_LIBS})
     message("Building STATIC Library")
     add_library(${PROJECT_NAME}_static STATIC ${libsrc})
+    set_target_properties(${PROJECT_NAME}_static PROPERTIES
+        OUTPUT_NAME ${PROJECT_NAME}_static
+        VERSION ${PROJECT_VERSION}
+    )
+
+    target_include_directories(${PROJECT_NAME}_static PUBLIC
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${SCREEN_CAPTURE_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+        #${SCREEN_CAPTURE_PLATFORM_INC}
+    )
+
     # set_target_properties(${PROJECT_NAME}_static PROPERTIES
     #     OUTPUT_NAME ${PROJECT_NAME}_static
     #     VERSION ${PROJECT_VERSION}
@@ -136,5 +147,3 @@ else()
 		)	 
 	endif()
 endif()  
-
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ${SCREEN_CAPTURE_LITE_EXPORT_ALL_SYMBOLS})

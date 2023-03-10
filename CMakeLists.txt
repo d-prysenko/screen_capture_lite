@@ -23,27 +23,25 @@ else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 endif()
 
-if(${BUILD_SHARED_LIBS})
-   set(TARGET_SUFFIX shared)
-else()
-   set(TARGET_SUFFIX static)
-endif()
 
-set(TARGET_NAME screen_capture_lite_${TARGET_SUFFIX})
+set(TARGET_SUFFIX static)
+
+
+set(TARGET_NAME screen_capture_lite_static)
 
 add_subdirectory(src_cpp) 
-if(${BUILD_CSHARP} AND ${BUILD_SHARED_LIBS})
-	add_subdirectory(src_csharp) 
-endif()
 
-install (TARGETS ${TARGET_NAME} EXPORT screen_capture_lite_targets
-    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
+
+install(
+  TARGETS ${TARGET_NAME}
+  EXPORT screen_capture_lite
+  ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-configure_file(modules/${TARGET_NAME}Config.cmake.in ${TARGET_NAME}Config.cmake @ONLY)
+#configure_file(modules/${TARGET_NAME}Config.cmake.in ${TARGET_NAME}Config.cmake @ONLY)
 
 #export(TARGETS ${TARGET_NAME} FILE ${TARGET_NAME}-config.cmake)
 #install(EXPORT ${TARGET_NAME}-config FILE ${TARGET_NAME}-config.cmake DESTINATION lib/cmake/screen_capture_lite)
@@ -52,28 +50,17 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}Config.cmake
   DESTINATION lib${LIB_SUFFIX}/cmake/screen_capture_lite)
 
  
-install (FILES 
+install(FILES 
 	include/ScreenCapture.h 
 	DESTINATION include
 )
 
-if (NOT TARGET uninstall)
-  configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
+install(
+  EXPORT screen_capture_lite
+  DESTINATION lib${LIB_SUFFIX}/cmake/screen_capture_lite
+  FILE ${TARGET_NAME}Config.cmake
+)
 
-  add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-endif()
-
-enable_testing()
-
-if (${BUILD_EXAMPLE})
-  add_subdirectory(Example_OpenGL) 
-  add_subdirectory(Example_CPP) 
-  if(${BUILD_CSHARP} AND ${BUILD_SHARED_LIBS})
-    add_subdirectory(Example_CSharp) 
-    add_subdirectory(Example_Unity) 
-  endif()
-endif()
+#install(EXPORT screen_capture_lite_build
+#    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/screen_capture_lite_build
+#    FILE        screen_capture_lite_buildConfig.cmake)
