@@ -1,5 +1,8 @@
 project(screen_capture_lite)
 
+set(SCREEN_CAPTURE_LITE_EXPORT_ALL_SYMBOLS ${CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS})
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+
 if(WIN32)
     set(SCREEN_CAPTURE_PLATFORM_SRC     
 		windows/GetWindows.cpp
@@ -80,10 +83,10 @@ set(libsrc
 if(NOT ${BUILD_SHARED_LIBS})
     message("Building STATIC Library")
     add_library(${PROJECT_NAME}_static STATIC ${libsrc})
-    set_target_properties(${PROJECT_NAME}_static PROPERTIES
-        OUTPUT_NAME ${PROJECT_NAME}_static
-        VERSION ${PROJECT_VERSION}
-    )
+    # set_target_properties(${PROJECT_NAME}_static PROPERTIES
+    #     OUTPUT_NAME ${PROJECT_NAME}_static
+    #     VERSION ${PROJECT_VERSION}
+    # )
 else()
   message("Building SHARED Library")
   
@@ -133,3 +136,5 @@ else()
 		)	 
 	endif()
 endif()  
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ${SCREEN_CAPTURE_LITE_EXPORT_ALL_SYMBOLS})
